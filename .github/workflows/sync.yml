@@ -1,0 +1,38 @@
+name: 每日同步乐谱数据
+
+on:
+  schedule:
+    # 每日 UTC 18:00 = 北京时间次日 02:00
+    - cron: '0 18 * * *'
+  workflow_dispatch: # 允许手动触发
+
+permissions:
+  contents: write # 用于自动 commit scores.json
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 配置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: 运行同步脚本
+        env:
+          FEISHU_APP_ID: ${{ secrets.FEISHU_APP_ID }}
+          FEISHU_APP_SECRET: ${{ secrets.FEISHU_APP_SECRET }}
+          FEISHU_BITABLE_APP_TOKEN: ${{ secrets.FEISHU_BITABLE_APP_TOKEN }}
+          FEISHU_BITABLE_TABLE_ID: ${{ secrets.FEISHU_BITABLE_TABLE_ID }}
+        run: node scripts/sync.js
+
+      - name: 提交并推送 scores.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add scores.json
+          git diff --cached --quiet || git commit -m "chore: 每日同步乐谱数据 $(date -u +%Y-%m-%d)"
+          git push
