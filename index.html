@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#4B3FE3" />
+  <meta name="description" content="LightAndSky 乐谱资源浏览与分发" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" type="image/jpeg" sizes="512x512" href="icon-512.jpg" />
+  <link rel="apple-touch-icon" href="icon-512.jpg" />
+  <link rel="stylesheet" href="styles.css?v=20260928a" />
+  <title>LightAndSky 乐谱库</title>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <h1 class="brand">
+        <span class="brand-mark">♪</span>
+        <span class="brand-text">LightAndSky 乐谱库</span>
+      </h1>
+      <div class="controls">
+        <input
+          id="search"
+          class="search-input"
+          type="search"
+          placeholder="搜索标题 / 作曲家…"
+          autocomplete="off"
+          aria-label="搜索乐谱"
+        />
+        <select id="sort" class="sort-select" aria-label="排序方式">
+          <option value="hot">热门优先</option>
+          <option value="new">最新上传</option>
+          <option value="alpha">字母序</option>
+        </select>
+      </div>
+      <nav id="categories" class="chips" aria-label="分类筛选"></nav>
+    </div>
+  </header>
+
+  <main class="main">
+    <section id="grid" class="grid" aria-live="polite"></section>
+    <p id="empty" class="empty" hidden>没有符合条件的乐谱。</p>
+  </main>
+
+  <div id="detail" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="detail-title">
+    <div class="modal-backdrop" data-close></div>
+    <article class="modal-card">
+      <button class="modal-close" data-close aria-label="关闭详情" onclick="closeDetail()">×</button>
+      <div class="modal-body">
+        <h2 id="detail-title" class="modal-title"></h2>
+        <p id="detail-composer" class="modal-composer"></p>
+        <p id="detail-intro" class="modal-intro"></p>
+        <div class="modal-meta">
+          <span id="detail-category" class="tag"></span>
+          <span id="detail-views" class="views"></span>
+          <span id="detail-date" class="date"></span>
+        </div>
+        <a id="detail-link" class="primary-btn" target="_blank" rel="noopener noreferrer">
+          前往飞书文档
+        </a>
+      </div>
+    </article>
+  </div>
+
+  <footer class="footer">
+    <span>由 LightAndSky 团体维护 · 数据每日同步自飞书</span>
+  </footer>
+
+  <script src="app.js?v=20260928a"></script>
+</body>
+</html>
