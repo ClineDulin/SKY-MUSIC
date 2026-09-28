@@ -1,0 +1,14 @@
+{
+  "name": "lightandsky-scores",
+  "version": "1.0.0",
+  "private": true,
+  "description": "LightAndSky 乐谱资源浏览与分发 PWA",
+  "scripts": {
+    "sync": "node scripts/sync.js",
+    "serve": "npx http-server . -p 8080 -c-1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "UNLICENSED"
+}

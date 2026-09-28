@@ -1,0 +1,26 @@
+{
+  "name": "LightAndSky 乐谱库",
+  "short_name": "乐谱库",
+  "description": "LightAndSky 团体乐谱资源浏览与分发",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#4B3FE3",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "icon-512.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ]
+}
