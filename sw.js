@@ -1,14 +1,14 @@
-// LightAndSky 乐谱库 Service Worker
+// 光遇琴谱 Service Worker
 // stale-while-revalidate 策略，离线可访问最近一次乐谱列表
 
-const CACHE = 'las-scores-v4';
+const CACHE = 'las-scores-v5';
 const ASSETS = [
   './',
   './index.html',
-  './styles.css?v=20260928a',
-  './app.js?v=20260928a',
+  './styles.css?v=20260928b',
+  './app.js?v=20260928b',
   './manifest.webmanifest',
-  './icon-512.svg',
+  './icon.svg',
   './scores.json',
 ];
 
