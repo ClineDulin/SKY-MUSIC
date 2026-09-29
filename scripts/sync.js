@@ -131,10 +131,10 @@ function parseWikiLink(raw) {
   if (!raw) return { url: '', token: '' };
   let s;
   if (Array.isArray(raw)) {
-    // 飞书 Bitable 多行文本字段返回数组：[{ type: 'text', text: '...' }]
-    s = raw.map((it) => (typeof it === 'object' ? it.text || it.link || '' : String(it))).join('');
+    // 飞书 Bitable 字段返回数组，优先取 link（超链接 URL），其次 text（Markdown 或纯文本）
+    s = raw.map((it) => (typeof it === 'object' ? it.link || it.text || '' : String(it))).join('');
   } else if (typeof raw === 'object') {
-    s = raw.text || raw.link || '';
+    s = raw.link || raw.text || '';
   } else {
     s = String(raw);
   }
