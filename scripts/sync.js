@@ -43,10 +43,10 @@ const FIELDS = {
   status: '状态',
 };
 
-// 琴谱类型值在前端展示时缩短
-const CATEGORY_MAP = {
-  '导入谱（json、txt文件）': '导入谱',
-  '图谱（数字谱/格子谱）': '图谱',
+// 状态 → 分类映射；不在映射中的状态（S3、异常/特殊）不展示
+const STATUS_CATEGORY = {
+  'S1': '导入谱',
+  'S2': '图谱',
 };
 
 function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
@@ -165,8 +165,9 @@ async function main() {
       const f = rec.fields || {};
       const { url } = parseWikiLink(f[FIELDS.feishuUrl]);
       if (!url) return null; // 跳过未发布（无知识库页面）的记录
-      const cat = Array.isArray(f[FIELDS.category]) ? f[FIELDS.category][0] : (f[FIELDS.category] || '');
       const status = Array.isArray(f[FIELDS.status]) ? f[FIELDS.status][0] : (f[FIELDS.status] || '');
+      const category = STATUS_CATEGORY[status];
+      if (!category) return null; // S3、异常/特殊 等不展示
       const intro = [f[FIELDS.intro], f[FIELDS.remark]].filter(Boolean).join(' / ');
       const dateVal = f[FIELDS.createdAt];
       let dateStr = '';
@@ -178,7 +179,7 @@ async function main() {
         id: rec.record_id,
         title: f[FIELDS.title] || '',
         composer: f[FIELDS.composer] || '',
-        category: CATEGORY_MAP[cat] || cat || '其他',
+        category,
         intro,
         feishu_url: url,
         created_at: dateStr,

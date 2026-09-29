@@ -154,17 +154,6 @@
     "status": "S1"
   },
   {
-    "id": "recNaBO8NI",
-    "title": "Minorebi",
-    "composer": "伊",
-    "category": "导入谱",
-    "intro": "sky studio",
-    "feishu_url": "https://lightsky.feishu.cn/wiki/TK6swn7Jtir9sNkE51ucq98nnKg",
-    "created_at": "2026-01-25",
-    "views": 0,
-    "status": "异常/特殊"
-  },
-  {
     "id": "rec27g0b3MYaLk",
     "title": "蒲公英的约定",
     "composer": "自制的",
@@ -185,16 +174,5 @@
     "created_at": "2026-06-28",
     "views": 0,
     "status": "S2"
-  },
-  {
-    "id": "rec28exKe6KFjh",
-    "title": "Flower Dance",
-    "composer": "久梦",
-    "category": "导入谱",
-    "intro": "可导入 / Sky Studio",
-    "feishu_url": "https://lightsky.feishu.cn/wiki/JatwwlXFii6Va9koBJTcHqxKnFe",
-    "created_at": "2026-09-22",
-    "views": 0,
-    "status": "S3"
   }
 ]

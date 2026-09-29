@@ -24,7 +24,7 @@ async function loadScores() {
   try {
     const res = await fetch('scores.json?v=' + Date.now(), { cache: 'no-cache' });
     if (!res.ok) throw new Error('HTTP ' + res.status);
-    state.scores = await res.json();
+    state.scores = (await res.json()).filter((s) => s.status === 'S1' || s.status === 'S2');
   } catch (err) {
     grid.innerHTML = '<p class="empty">无法加载乐谱数据：' + err.message + '</p>';
     return;
