@@ -107,29 +107,9 @@ async function updateRecord(token, recordId, fields) {
   return data;
 }
 
-// 通过 wiki 节点 token 获取实际的文件 token 和类型
-async function getWikiNodeInfo(token, wikiToken) {
-  const url = `${BASE}/wiki/v2/spaces/get_node?token=${wikiToken}`;
-  const res = await fetch(url, {
-    headers: { Authorization: 'Bearer ' + token },
-  });
-  const data = await res.json();
-  if (data.code !== 0) {
-    console.warn('   获取 wiki 节点信息失败：' + JSON.stringify(data));
-    return null;
-  }
-  const node = data.data?.node || {};
-  return { objToken: node.obj_token, objType: node.obj_type || 'docx' };
-}
-
 async function getDocStatistics(token, wikiToken) {
-  // 先解析 wiki 节点，拿到实际文件 token 和类型
-  const nodeInfo = await getWikiNodeInfo(token, wikiToken);
-  if (!nodeInfo || !nodeInfo.objToken) {
-    console.warn('   无法获取文件 token，跳过统计');
-    return null;
-  }
-  const url = `${BASE}/drive/v1/files/${nodeInfo.objToken}/statistics?file_type=${nodeInfo.objType}`;
+  // 直接用 wiki token 调统计 API，file_type=wiki
+  const url = `${BASE}/drive/v1/files/${wikiToken}/statistics?file_type=wiki`;
   const res = await fetch(url, {
     headers: { Authorization: 'Bearer ' + token },
   });
@@ -138,9 +118,9 @@ async function getDocStatistics(token, wikiToken) {
     console.warn('   拉取统计失败：' + JSON.stringify(data));
     return null;
   }
-  const stat = data.data || {};
+  const stat = data.data?.statistics || data.data || {};
   return {
-    pv: stat.pv != null ? Number(stat.pv) : (stat.view_count != null ? Number(stat.view_count) : 0),
+    pv: stat.pv != null ? Number(stat.pv) : 0,
     uv: stat.uv != null ? Number(stat.uv) : 0,
     like: stat.like_count != null ? Number(stat.like_count) : 0,
   };
