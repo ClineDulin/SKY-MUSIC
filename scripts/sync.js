@@ -156,6 +156,16 @@ async function main() {
   const records = await listBitableRecords(token);
   console.log(`  共 ${records.length} 条记录`);
 
+  // 调试：打印第一条记录的字段结构，帮助排查格式问题
+  if (records[0]) {
+    const f = records[0].fields || {};
+    console.log('  [调试] 第一条记录字段：');
+    for (const [key, val] of Object.entries(f)) {
+      const display = typeof val === 'string' ? val : JSON.stringify(val);
+      console.log(`    ${key}: ${display.slice(0, 200)}`);
+    }
+  }
+
   console.log('▶ 拉取知识库页面 PV 并写回 Bitable「浏览次数」...');
   for (const rec of records) {
     const f = rec.fields || {};
