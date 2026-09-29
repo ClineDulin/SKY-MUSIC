@@ -1,7 +1,7 @@
 // 光遇琴谱 Service Worker
 // stale-while-revalidate 策略，离线可访问最近一次乐谱列表
 
-const CACHE = 'las-scores-v8';
+const CACHE = 'las-scores-v9';
 const ASSETS = [
   './',
   './index.html',
