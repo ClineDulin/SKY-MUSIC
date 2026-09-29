@@ -51,6 +51,14 @@ const STATUS_CATEGORY = {
 
 function sleep(ms) { return new Promise((r) => setTimeout(r, ms)); }
 
+// 从 Bitable 字段值中提取纯文本（处理数组、对象等格式）
+function fieldText(val) {
+  if (!val) return '';
+  if (Array.isArray(val)) return val.map((it) => (typeof it === 'object' ? it.text || it.name || '' : String(it))).join('');
+  if (typeof val === 'object') return val.text || val.name || '';
+  return String(val);
+}
+
 async function getTenantToken() {
   const res = await fetch(`${BASE}/auth/v3/tenant_access_token/internal`, {
     method: 'POST',
@@ -121,7 +129,15 @@ async function getDocStatistics(token, wikiToken) {
 // 从「知识库页面」字段（Markdown 链接 [label](url)）中提取 URL 与 wiki token
 function parseWikiLink(raw) {
   if (!raw) return { url: '', token: '' };
-  const s = typeof raw === 'object' ? raw.text || '' : String(raw);
+  let s;
+  if (Array.isArray(raw)) {
+    // 飞书 Bitable 多行文本字段返回数组：[{ type: 'text', text: '...' }]
+    s = raw.map((it) => (typeof it === 'object' ? it.text || it.link || '' : String(it))).join('');
+  } else if (typeof raw === 'object') {
+    s = raw.text || raw.link || '';
+  } else {
+    s = String(raw);
+  }
   const m = s.match(/\]\((https?:\/\/[^)\s]+)/);
   const url = m ? m[1] : (s.startsWith('http') ? s : '');
   const tm = url.match(/\/wiki\/([A-Za-z0-9]+)/);
@@ -145,10 +161,10 @@ async function main() {
     const f = rec.fields || {};
     const { token: wikiToken } = parseWikiLink(f[FIELDS.feishuUrl]);
     if (!wikiToken) {
-      console.log(`  - 跳过（无知识库页面）：${JSON.stringify(f[FIELDS.title])}`);
+      console.log(`  - 跳过（无知识库页面）：${fieldText(f[FIELDS.title])}`);
       continue;
     }
-    console.log(`  - 处理：${JSON.stringify(f[FIELDS.title])} → ${wikiToken}`);
+    console.log(`  - 处理：${fieldText(f[FIELDS.title])} → ${wikiToken}`);
     const stat = await getDocStatistics(token, wikiToken);
     await sleep(SLEEP_MS);
     if (stat) {
@@ -165,20 +181,20 @@ async function main() {
       const f = rec.fields || {};
       const { url } = parseWikiLink(f[FIELDS.feishuUrl]);
       if (!url) return null; // 跳过未发布（无知识库页面）的记录
-      const status = Array.isArray(f[FIELDS.status]) ? f[FIELDS.status][0] : (f[FIELDS.status] || '');
+      const status = fieldText(f[FIELDS.status]);
       const category = STATUS_CATEGORY[status];
       if (!category) return null; // S3、异常/特殊 等不展示
-      const intro = [f[FIELDS.intro], f[FIELDS.remark]].filter(Boolean).join(' / ');
+      const intro = [fieldText(f[FIELDS.intro]), fieldText(f[FIELDS.remark])].filter(Boolean).join(' / ');
       const dateVal = f[FIELDS.createdAt];
       let dateStr = '';
       if (dateVal) {
-        const ms = typeof dateVal === 'number' ? dateVal : Date.parse(dateVal);
+        const ms = typeof dateVal === 'number' ? dateVal : Date.parse(fieldText(dateVal));
         dateStr = isNaN(ms) ? String(dateVal) : new Date(ms).toISOString().slice(0, 10);
       }
       return {
         id: rec.record_id,
-        title: f[FIELDS.title] || '',
-        composer: f[FIELDS.composer] || '',
+        title: fieldText(f[FIELDS.title]),
+        composer: fieldText(f[FIELDS.composer]),
         category,
         intro,
         feishu_url: url,
