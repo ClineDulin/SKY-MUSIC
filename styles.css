@@ -208,13 +208,16 @@ html, body {
 
 .status-badge {
   position: absolute;
-  top: 8px;
+  top: 16px;
   right: 8px;
   z-index: 2;
+  display: inline-flex;
+  align-items: center;
   padding: 1px 7px;
   border-radius: var(--radius-full);
   font-size: 10px;
   font-weight: 600;
+  line-height: 1.4;
   color: #fff;
 }
 
