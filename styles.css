@@ -448,6 +448,7 @@ html, body {
 
 @media (max-width: 420px) {
   .grid { grid-template-columns: 1fr 1fr; }
-  .controls { flex-direction: column; }
-  .search-input, .sort-select { width: 100%; flex: 0 0 auto; }
+  .controls { flex-direction: row; flex-wrap: nowrap; align-items: center; }
+  .search-input { flex: 1 1 auto; min-width: 0; }
+  .sort-select { flex: 0 0 auto; }
 }
