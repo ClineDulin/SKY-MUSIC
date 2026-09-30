@@ -62,6 +62,13 @@ html, body {
   gap: 12px;
 }
 
+.topbar-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .brand {
   margin: 0;
   font-size: 18px;
@@ -93,7 +100,7 @@ html, body {
   height: 38px;
   padding: 0 16px;
   border-radius: var(--radius-full);
-  background: var(--primary);
+  background: var(--brand);
   color: #fff;
   font-size: 14px;
   font-weight: 600;
