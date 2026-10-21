@@ -294,11 +294,13 @@ html, body {
   font-size: 14px;
 }
 
-/* ===== 详情页 ===== */
-/* 详情打开时隐藏列表视图 */
-body.detail-open .topbar,
-body.detail-open .main,
-body.detail-open .footer { display: none; }
+/* ===== 详情 ===== */
+/* 窄屏：整页展示，详情打开时隐藏列表视图 */
+@media (max-width: 719px) {
+  body.detail-open .topbar,
+  body.detail-open .main,
+  body.detail-open .footer { display: none; }
+}
 
 .detail-page[hidden] { display: none; }
 
@@ -451,6 +453,64 @@ body.detail-open .footer { display: none; }
 
 .detail-content .primary-btn {
   align-self: stretch;
+}
+
+/* ===== 宽屏：同一份内容以居中浮窗呈现，背景列表保持可见 ===== */
+@media (min-width: 720px) {
+  body.detail-open { overflow: hidden; }
+
+  .detail-page {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 0;
+    padding: 32px 24px;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+
+  .detail-sheet {
+    width: 100%;
+    max-width: 620px;
+    max-height: 100%;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    background: var(--surface-muted);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-lg);
+    /* 过渡动画：如不需要可删除下面一行 */
+    animation: sheet-in 200ms ease;
+  }
+
+  .detail-header {
+    border-radius: var(--radius-card) var(--radius-card) 0 0;
+  }
+
+  /* 浮窗容器已带动画，内容不再叠加 */
+  .detail-content {
+    padding: 20px 24px 28px;
+    animation: none;
+  }
+
+  /* 宽屏空间充足，各项按内容宽度排布，避免长文本被挤成两行 */
+  .detail-meta {
+    grid-template-columns: repeat(4, auto);
+    justify-content: space-between;
+    gap: 14px 24px;
+  }
+}
+
+@keyframes sheet-in {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (min-width: 720px) and (prefers-reduced-motion: reduce) {
+  .detail-sheet { animation: none; }
 }
 
 .primary-btn {

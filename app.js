@@ -19,6 +19,9 @@ const sortSelect = $('#sort');
 const chips = $('#categories');
 const detailPage = $('#detail-page');
 
+// 宽屏用浮窗、窄屏用整页，具体形态由 CSS 媒体查询决定
+const wideQuery = window.matchMedia('(min-width: 720px)');
+
 let listScrollY = 0;
 
 // ===== 加载数据 =====
@@ -150,7 +153,8 @@ function openDetail(id) {
   if (!document.body.classList.contains('detail-open')) listScrollY = window.scrollY;
   detailPage.hidden = false;
   document.body.classList.add('detail-open');
-  window.scrollTo(0, 0);
+  // 整页模式下回到顶部；浮窗模式保持列表原地不动
+  if (!wideQuery.matches) window.scrollTo(0, 0);
   return true;
 }
 
@@ -159,7 +163,7 @@ function closeDetail() {
   detailPage.hidden = true;
   document.body.classList.remove('detail-open');
   document.title = '光遇琴谱';
-  window.scrollTo(0, listScrollY);
+  if (!wideQuery.matches) window.scrollTo(0, listScrollY);
 }
 
 // ===== 工具 =====
@@ -181,6 +185,10 @@ sortSelect.addEventListener('change', (e) => {
 });
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && !detailPage.hidden) location.hash = '#/';
+});
+// 浮窗模式：点击浮窗外的遮罩关闭（整页模式点击空白不关闭）
+detailPage.addEventListener('click', (e) => {
+  if (e.target === detailPage && wideQuery.matches) location.hash = '#/';
 });
 
 // hash 路由：#/score/<id> 显示详情页，其余显示列表
