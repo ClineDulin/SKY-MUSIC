@@ -1,12 +1,12 @@
 // 光遇琴谱 Service Worker
 // stale-while-revalidate 策略，离线可访问最近一次乐谱列表
 
-const CACHE = 'las-scores-v17';
+const CACHE = 'las-scores-v18';
 const ASSETS = [
   './',
   './index.html',
-  './styles.css?v=20261001d',
-  './app.js?v=20261001b',
+  './styles.css?v=20261021a',
+  './app.js?v=20261021a',
   './manifest.webmanifest',
   './icon.svg',
   './scores.json',

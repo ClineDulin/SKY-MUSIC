@@ -7,7 +7,7 @@
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" type="image/svg+xml" href="icon.svg">
   <link rel="apple-touch-icon" href="icon.svg">
-  <link rel="stylesheet" href="styles.css?v=20261001d">
+  <link rel="stylesheet" href="styles.css?v=20261021a">
   <title>光遇琴谱</title>
 </head>
 <body>
@@ -213,25 +213,50 @@
     <p id="empty" class="empty" hidden="">没有符合条件的乐谱。</p>
   </main>
 
-  <div id="detail" class="modal" role="dialog" aria-modal="true" aria-labelledby="detail-title" hidden="">
-    <div class="modal-backdrop" data-close=""></div>
-    <article class="modal-card">
-      <button class="modal-close" data-close="" aria-label="关闭详情" onclick="closeDetail()">×</button>
-      <div class="modal-body">
-        <h2 id="detail-title" class="modal-title">丁达尔的梦</h2>
-        <p id="detail-composer" class="modal-composer">伊</p>
-        <p id="detail-intro" class="modal-intro">sky studio(难)</p>
-        <div class="modal-meta">
+  <section id="detail-page" class="detail-page" aria-labelledby="detail-title" hidden="">
+    <header class="detail-header">
+      <a class="detail-back" href="#/" aria-label="返回乐谱列表">‹ 返回</a>
+      <span class="detail-header-title">乐谱详情</span>
+    </header>
+    <div class="detail-content">
+      <div class="detail-head">
+        <div class="detail-tags">
           <span id="detail-category" class="tag">导入谱</span>
-          <span id="detail-views" class="views">浏览 42</span>
-          <span id="detail-date" class="date">上传于 2026-01-24 · 状态 S1</span>
+          <span id="detail-status" class="status-pill status-S1">S1</span>
         </div>
-        <a id="detail-link" class="primary-btn" target="_blank" rel="noopener noreferrer" href="https://lightsky.feishu.cn/wiki/VX1gwmtyLi9vAckVHgZc3byLnwd">
-          前往飞书文档
-        </a>
+        <h1 id="detail-title" class="detail-title">—</h1>
+        <p id="detail-composer" class="detail-composer"></p>
       </div>
-    </article>
-  </div>
+
+      <dl class="detail-meta">
+        <div class="detail-meta-item">
+          <dt>指法</dt>
+          <dd id="detail-fingering">—</dd>
+        </div>
+        <div class="detail-meta-item">
+          <dt>难度</dt>
+          <dd id="detail-difficulty">—</dd>
+        </div>
+        <div class="detail-meta-item">
+          <dt>浏览</dt>
+          <dd id="detail-views">—</dd>
+        </div>
+        <div class="detail-meta-item">
+          <dt>上传</dt>
+          <dd id="detail-date">—</dd>
+        </div>
+      </dl>
+
+      <section class="detail-section">
+        <h2 class="detail-section-title">注意事项</h2>
+        <p id="detail-intro" class="detail-section-text">—</p>
+      </section>
+
+      <a id="detail-link" class="primary-btn" target="_blank" rel="noopener noreferrer" hidden>
+        前往飞书文档
+      </a>
+    </div>
+  </section>
 
   <footer class="footer">
     <span>由 LightAndSky 维护 · 数据每日同步自飞书</span>
@@ -239,7 +264,7 @@
     <span class="footer-name">SKY-MUSIC</span>
   </footer>
 
-  <script src="app.js?v=20261001b"></script>
+  <script src="app.js?v=20261021a"></script>
 
 
 

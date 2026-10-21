@@ -17,7 +17,9 @@ const empty = $('#empty');
 const searchInput = $('#search');
 const sortSelect = $('#sort');
 const chips = $('#categories');
-const detail = $('#detail');
+const detailPage = $('#detail-page');
+
+let listScrollY = 0;
 
 // ===== 加载数据 =====
 async function loadScores() {
@@ -31,6 +33,7 @@ async function loadScores() {
   }
   renderCategories();
   apply();
+  routeFromHash();
 }
 
 // ===== 分类 chips =====
@@ -87,9 +90,9 @@ function render() {
   empty.hidden = true;
   const frag = document.createDocumentFragment();
   state.filtered.forEach((s) => {
-    const card = document.createElement('article');
+    const card = document.createElement('a');
     card.className = 'card';
-    card.tabIndex = 0;
+    card.href = '#/score/' + encodeURIComponent(s.id);
     card.dataset.id = s.id;
     const cat = s.category || '其他';
     const statusBadge = s.status
@@ -107,41 +110,57 @@ function render() {
           <span class="views">浏览 ${(s.views || 0).toLocaleString()}</span>
         </div>
       </div>`;
-    card.addEventListener('click', () => openDetail(s.id));
-    card.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openDetail(s.id); }
-    });
     frag.appendChild(card);
   });
   grid.appendChild(frag);
 }
 
-// ===== 详情视图 =====
+// ===== 详情页 =====
 function openDetail(id) {
   const s = state.scores.find((x) => x.id === id);
-  if (!s) return;
+  if (!s) return false;
+
+  document.title = (s.title || '未命名') + ' · 光遇琴谱';
   $('#detail-title').textContent = s.title || '未命名';
   $('#detail-composer').textContent = s.composer || '';
-  $('#detail-intro').textContent = s.intro || '';
+  $('#detail-intro').textContent = s.intro || '暂无';
   $('#detail-category').textContent = s.category || '其他';
-  $('#detail-views').textContent = '浏览 ' + (s.views || 0).toLocaleString();
-  $('#detail-date').textContent = [
-    s.created_at ? '上传于 ' + s.created_at : '',
-    s.status ? '状态 ' + s.status : '',
-  ].filter(Boolean).join(' · ');
+  $('#detail-fingering').textContent = s.fingering || '—';
+  $('#detail-difficulty').textContent = s.difficulty || '—';
+  $('#detail-views').textContent = (s.views || 0).toLocaleString();
+  $('#detail-date').textContent = s.created_at || '—';
+
+  const status = $('#detail-status');
+  if (s.status) {
+    status.hidden = false;
+    status.textContent = s.status;
+    status.className = 'status-pill status-' + s.status;
+  } else {
+    status.hidden = true;
+  }
+
   const link = $('#detail-link');
-  link.href = s.feishu_url || '#';
-  detail.hidden = false;
-  document.body.style.overflow = 'hidden';
-  history.replaceState(null, '', '#/score/' + id);
+  if (s.feishu_url) {
+    link.href = s.feishu_url;
+    link.hidden = false;
+  } else {
+    link.hidden = true;
+  }
+
+  if (!document.body.classList.contains('detail-open')) listScrollY = window.scrollY;
+  detailPage.hidden = false;
+  document.body.classList.add('detail-open');
+  window.scrollTo(0, 0);
+  return true;
 }
 
 function closeDetail() {
-  detail.hidden = true;
-  document.body.style.overflow = '';
-  history.replaceState(null, '', '#/');
+  if (detailPage.hidden) return;
+  detailPage.hidden = true;
+  document.body.classList.remove('detail-open');
+  document.title = '光遇琴谱';
+  window.scrollTo(0, listScrollY);
 }
-window.closeDetail = closeDetail;
 
 // ===== 工具 =====
 function escapeHTML(s) {
@@ -160,18 +179,23 @@ sortSelect.addEventListener('change', (e) => {
   state.sort = e.target.value;
   apply();
 });
-detail.addEventListener('click', (e) => {
-  if (e.target.matches('[data-close]')) closeDetail();
-});
 document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' && !detail.hidden) closeDetail();
+  if (e.key === 'Escape' && !detailPage.hidden) location.hash = '#/';
 });
 
-// hash 路由
+// hash 路由：#/score/<id> 显示详情页，其余显示列表
 function routeFromHash() {
   const m = location.hash.match(/^#\/score\/(.+)$/);
-  if (m) openDetail(m[1]);
-  else if (!detail.hidden) closeDetail();
+  if (m) {
+    if (openDetail(decodeURIComponent(m[1]))) return;
+    // 数据未加载完成时先等待；已加载但仍找不到该乐谱则回到列表
+    if (state.scores.length) {
+      history.replaceState(null, '', '#/');
+      closeDetail();
+    }
+    return;
+  }
+  closeDetail();
 }
 window.addEventListener('hashchange', routeFromHash);
 
